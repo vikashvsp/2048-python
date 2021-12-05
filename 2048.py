@@ -17,6 +17,11 @@ class Game(tk.Frame):
         self.mainloop()
         self.start_game()
 
+        self.master.bind("<Left>",self.left)
+        self.master.bind("<Right>",self.right)
+        self.master.bind("<Up>",self.up)
+        self.master.bind("<Down>",self.down)
+
     def make_GUI(self):
         #making grid in this func
         self.cells=[]
@@ -107,3 +112,34 @@ class Game(tk.Frame):
             for j in range(4):
                 new_matrix[i][j]=self.matrix[j][i]
         self.matrix=new_matrix
+
+    #adding new tile randomly to empty cell
+
+    def add_new_tile(self):
+        row=random.randint(0, 3)
+        col=random.randint(0, 3)
+        while(self.matrix[row][col]!=0):
+            row=random.randint(0, 3)
+            col=random.randint(0, 3)
+        self.matrix[row][col]=random.choice([2,4])
+
+
+    #updating GUI to the matrix
+
+    def update_GUI(self):
+        for i in range(4):
+            for j in range(4):
+                cell_value= self.matrix[i][j]
+                if cell_value==0:
+                    self.cells[i][j]["frame"].configure(bg=c.EMPTY_CELL_COLOR)
+                    self.cells[i][j]["number"].configure(bg=c.EMPTY_CELL_COLOR, text="")
+                else:
+                    self.cells[i][j]["frame"].configure(bg=c.CELL_COLORS[cell_value])
+                    self.cells[i][j]["number"].configure(
+                        bg=c.CELL_COLORS[cell_value],
+                        fg=c.CELL_NUMBER_COLORS[cell_value],
+                        font=c.CELL_NUMBER_FONTS[cell_value],
+                        text=str(cell_value)
+                    )
+        self.score_label.configure(text=self.score)
+        self.update_idletasks()
